@@ -82,7 +82,7 @@ function buildCharts(sample) {
     // 7. Create the yticks for the bar chart.
     // Hint: Get the the top 10 otu_ids and map them in descending order  
     //  so the otu_ids with the most bacteria are last. 
-    var yticks = otu_ids.slice(0,10);
+    var yticks = otu_ids.slice(0,10).reverse();
 	//console.log(yticks);
 	var xdata = sample_values.slice(0,10).reverse();
 	var ytickStrings = yticks.map(ytick => "OTU " + ytick.toString());
@@ -113,18 +113,16 @@ function buildCharts(sample) {
 		x: otu_ids,
 		y: sample_values,
 		text: otu_labels,
-		//type: "bubble"
+		//type: "scatter",
 		mode: "markers",
-		marker: {
-			size: sample_values,
-			color: otu_ids
-		}
+		marker: { size: sample_values, color: otu_ids, colorscale: 'Earth' }
 	};
     var bubbleData = [bubbleTrace];
 	
     // 2. Create the layout for the bubble chart.
     var bubbleLayout = {
 		title: "Bacteria Cultures Per Sample",
+		hovermode: "closest",
 		xaxis: {
 			title: "OTU ID"
 		}
@@ -139,16 +137,24 @@ function buildCharts(sample) {
     var metaResultArray = metadata.filter(sampleObj => sampleObj.id == sample);
     var metaResult = metaResultArray[0];
 	var wfreqFloat = parseFloat(metaResult.wfreq) * 1.0;
-	console.log(wfreqFloat);
+	//console.log(wfreqFloat);
 	var gaugeTrace = {
 		value: wfreqFloat,
 		type: "indicator",
 		mode: "gauge+number",
 		title: {
-			text: "<h1>Belly Button Washing Frequency</h1><br>Scrubs per Week"
-			},
+			text: "<b>Belly Button Washing Frequency</b><br>Scrubs per Week"
+		},
 		gauge: {
-			axis: { range: [null, 10], tickwidth: 1, tickcolor: "darkblue" },
+			axis: { 
+				range: [null, 10], 
+				tickwidth: 1, 
+				tickcolor: "darkblue",
+				showticklabels: true,
+				tickmode: "linear",
+				tick0: 0,
+				dtick: 2			
+			},
 			bar: { color: "black" },
 			steps: [
 			{ range: [0, 2], color: "red" },
